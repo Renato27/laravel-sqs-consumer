@@ -1,0 +1,50 @@
+{
+    "name": "renatomaldonado/laravel-sqs-consume",
+    "type": "library",
+    "description": "Consumer of sqs message",
+    "keywords": [
+        "php",
+        "laravel",
+        "lumen",
+        "sqs",
+        "aws",
+        "consumer",
+        "queue"
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Renatomaldonado\\LaravelSqsConsume\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "renato maldonado",
+            "email": "mallldonado@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.1.3",
+        "illuminate/support": "^7.0|^8.0|^9.0",
+        "illuminate/queue": "^7.0|^8.0|^9.0",
+        "aws/aws-sdk-php": "~3.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Renatomaldonado\\LaravelSqsConsume\\Provider\\QueueServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8",
+        "orchestra/testbench": "~4.0|^5.0|^6.0|^7.0"
+    },
+    "scripts": {
+        "test": [
+          "phpunit -c phpunit.xml --order-by random"
+        ]
+      }
+}
