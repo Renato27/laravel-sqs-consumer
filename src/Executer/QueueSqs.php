@@ -5,7 +5,7 @@ namespace Renatomaldonado\LaravelSqsConsume\Executer;
 use Illuminate\Queue\Jobs\SqsJob;
 use Illuminate\Queue\SqsQueue;
 
-class Queue extends SqsQueue
+class QueueSqs extends SqsQueue
 {
      /**
      * Pop the next job off of the queue.
@@ -65,9 +65,9 @@ class Queue extends SqsQueue
             $queueId = explode('/', $queue);
             $queueId = array_pop($queueId);
 
-            $class = (array_key_exists($queueId, $this->container['config']->get('sqs-executer.handlers')))
-                ? $this->container['config']->get('sqs-executer.handlers')[$queueId]
-                : $this->container['config']->get('sqs-executer.default-handler');
+            $class = (array_key_exists($queueId, $this->container['config']->get('sqs-consumer.handlers')))
+                ? $this->container['config']->get('sqs-consumer.handlers')[$queueId]
+                : $this->container['config']->get('sqs-consumer.default-handler');
 
             $response = $this->modifyPayload($response['Messages'][0], $class);
 

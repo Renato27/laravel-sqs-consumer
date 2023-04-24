@@ -2,25 +2,11 @@
 
 namespace SqsConsumer;
 
-use Aws\Sqs\SqsClient;
-use Illuminate\Foundation\Testing\TestCase;
-use Orchestra\Testbench\Concerns\CreatesApplication;
-use Renatomaldonado\LaravelSqsConsume\Executer\Queue;
+use Renatomaldonado\LaravelSqsConsume\Executer\QueueSqs;
+use Renatomaldonado\LaravelSqsConsume\Tests\TestCase;
 
 class SqsConsumerTest extends TestCase
 {
-    use CreatesApplication;
-
-    private $sqsClient;
-
-    protected function setUp():void
-    {
-        $this->sqsClient = $this->getMockBuilder(SqsClient::class)
-            ->disableOriginalConstructor()
-            ->addMethods(['receiveMessage'])
-            ->getMock();
-        
-    }
 
     public function testWillPopMessageOffQueue()
     {
@@ -43,7 +29,7 @@ class SqsConsumerTest extends TestCase
             ],
         ]);
 
-        $queue = new Queue($this->sqsClient, 'default_queue');
+        $queue = new QueueSqs($this->sqsClient, 'default_queue');
         
         $queue->setContainer($this->createMock(\Illuminate\Container\Container::class));
 
@@ -58,7 +44,7 @@ class SqsConsumerTest extends TestCase
             ],
         ];
 
-        $this->assertInstanceOf(Queue::class, $job);
+        $this->assertInstanceOf(QueueSqs::class, $job);
         $this->assertEquals(json_encode($expectedRawBody), $job->getRawBody());
     }
 }

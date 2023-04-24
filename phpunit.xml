@@ -12,6 +12,6 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
-        <env name="QUEUE_CONNECTION" value="sqs"/>
+        <env name="QUEUE_CONNECTION" value="sqs-consumer"/>
     </php>
 </phpunit>
