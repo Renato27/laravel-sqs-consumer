@@ -3,7 +3,8 @@
 namespace Renatomaldonado\LaravelSqsConsume\Tests;
 
 use Aws\Sqs\SqsClient;
-use Renatomaldonado\LaravelSqsConsume\Provider\SQSQueueServiceProvider;
+use Renatomaldonado\LaravelSqsConsume\Provider\LaravelSQSQueueServiceProvider;
+use Renatomaldonado\LaravelSqsConsume\Provider\LumenSQSQueueServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -36,7 +37,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            SQSQueueServiceProvider::class
+            LaravelSQSQueueServiceProvider::class,
+            LumenSQSQueueServiceProvider::class,
         ];
     }
 }

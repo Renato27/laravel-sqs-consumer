@@ -24,7 +24,7 @@ composer require renatomaldonado/laravel-sqs-consume
 
 'providers' => [
     '...',
-    'Renatomaldonado\LaravelSqsConsume\Provider\SQSQueueServiceProvider',
+    'Renatomaldonado\LaravelSqsConsume\Provider\LaravelSQSQueueServiceProvider',
 ];
 ```
 
@@ -32,14 +32,14 @@ composer require renatomaldonado/laravel-sqs-consume
 
 ```php
 // Add in your bootstrap/app.php
-$app->register(Renatomaldonado\LaravelSqsConsume\Provider\SQSQueueServiceProvider::class);
+$app->register(Renatomaldonado\LaravelSqsConsume\Provider\LumenSQSQueueServiceProvider::class);
 ```
 
 ## Configuration
 
 ```php
 // Generate standard config file (Laravel only)
-php artisan vendor:publish --provider="Renatomaldonado\LaravelSqsConsume\Provider\ConfigQueueServiceProvider" 
+php artisan vendor:publish --provider="Renatomaldonado\LaravelSqsConsume\Provider\LaravelSQSQueueServiceProvider" 
 
 // In Lumen, create it manually (see example below) and register it in bootstrap/app.php
 $app->configure('sqs-consumer');

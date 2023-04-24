@@ -7,7 +7,7 @@ use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 
-class SQSQueueServiceProvider extends ServiceProvider
+class LumenSQSQueueServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -26,7 +26,7 @@ class SQSQueueServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['queue']->addConnector('sqs-consumer', function (){
+        $this->app['queue']->extend('sqs-consumer', function () {
             return new Connector();
         });
     }
