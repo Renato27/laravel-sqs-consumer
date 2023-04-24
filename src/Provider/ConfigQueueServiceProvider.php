@@ -1,6 +1,6 @@
 <?php
 
-namespace Provider;
+namespace Renatomaldonado\LaravelSqsConsume\Provider;
 
 use Illuminate\Support\ServiceProvider;
 
