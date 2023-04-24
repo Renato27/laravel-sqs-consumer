@@ -39,7 +39,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Renatomaldonado\\LaravelSqsConsume\\Provider\\QueueServiceProvider",
+                "Renatomaldonado\\LaravelSqsConsume\\Provider\\SQSQueueServiceProvider",
                 "Renatomaldonado\\LaravelSqsConsume\\Provider\\ConfigQueueServiceProvider"
             ]
         }

@@ -24,7 +24,7 @@ composer require renatomaldonado/laravel-sqs-consume
 
 'providers' => [
     '...',
-    'Renatomaldonado\LaravelSqsConsume\Provider\QueueServiceProvider',
+    'Renatomaldonado\LaravelSqsConsume\Provider\SQSQueueServiceProvider',
 ];
 ```
 
@@ -32,7 +32,7 @@ composer require renatomaldonado/laravel-sqs-consume
 
 ```php
 // Add in your bootstrap/app.php
-$app->register(Renatomaldonado\LaravelSqsConsume\Provider\QueueServiceProvider::class);
+$app->register(Renatomaldonado\LaravelSqsConsume\Provider\SQSQueueServiceProvider::class);
 ```
 
 ## Configuration
