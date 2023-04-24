@@ -26,6 +26,7 @@ class QueueServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        dd($this->app['queue']);
         $this->app['queue']->addConnector('sqs-consumer', function (){
             return new Connector();
         });

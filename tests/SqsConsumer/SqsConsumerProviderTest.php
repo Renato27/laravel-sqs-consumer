@@ -2,46 +2,40 @@
 
 namespace SqsConsumer;
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Facade;
-use Tests\TestCase;
-use Renatomaldonado\LaravelSqsConsume\Provider\QueueServiceProvider;
+use Illuminate\Foundation\Testing\TestCase;
+use Orchestra\Testbench\Concerns\CreatesApplication;
 use Renatomaldonado\LaravelSqsConsume\Executer\Connector;
 
 class SqsConsumerProviderTest extends TestCase
 {
-    private $provider;
+    use CreatesApplication;
 
-    protected function setUp(): void
+    protected function getEnvironmentSetUp($app)
     {
-        parent::setUp();
-        Facade::clearResolvedInstances();
-        $this->getEnvironmentSetUp();
-        $app = new Application();
-        $this->provider = new QueueServiceProvider($app);
-    }
-
-    protected function getEnvironmentSetUp()
-    {
-        Config::set('queue.connections.sqs-consumer', [
+        $app['config']->set('queue.connections.sqs-consumer', [
             'driver' => 'sqs-consumer',
             'key'    => env('AWS_ACCESS_KEY', 'your-public-key'),
             'secret' => env('AWS_SECRET_ACCESS_KEY', 'your-secret-key'),
             'queue'  => env('QUEUE_URL', 'your-queue-url'),
             'region' => env('AWS_DEFAULT_REGION', 'us-east-1')
         ]);
-        Config::set('queue.default', 'sqs-consumer');
+        $app['config']->set('queue.default', 'sqs-consumer');
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [
+            'Renatomaldonado\LaravelSqsConsume\Provider\QueueServiceProvider',
+        ];
     }
 
     public function testWillRegisterQueueConnector()
     {
-        $reflectionQueueManager = new \ReflectionClass(Config::get('queue'));
+        $reflectionQueueManager = new \ReflectionClass($this->app['queue']);
         $reflectionQueueManagerGetConnectorMethod = $reflectionQueueManager->getMethod('getConnector');
         $reflectionQueueManagerGetConnectorMethod->setAccessible(true);
-
         $connector = $reflectionQueueManagerGetConnectorMethod->invoke(
-            Config::get('queue'),
+            $this->app['queue'],
             'sqs-consumer'
         );
         

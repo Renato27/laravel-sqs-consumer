@@ -3,18 +3,23 @@
 namespace SqsConsumer;
 
 use Aws\Sqs\SqsClient;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\TestCase;
+use Orchestra\Testbench\Concerns\CreatesApplication;
+use Renatomaldonado\LaravelSqsConsume\Executer\Queue;
 
 class SqsConsumerTest extends TestCase
 {
+    use CreatesApplication;
+
     private $sqsClient;
 
     protected function setUp():void
     {
         $this->sqsClient = $this->getMockBuilder(SqsClient::class)
             ->disableOriginalConstructor()
-            ->setMethods(['receiveMessage'])
+            ->addMethods(['receiveMessage'])
             ->getMock();
+        
     }
 
     public function testWillPopMessageOffQueue()
@@ -38,8 +43,8 @@ class SqsConsumerTest extends TestCase
             ],
         ]);
 
-        $queue = new Queue();
-
+        $queue = new Queue($this->sqsClient, 'default_queue');
+        
         $queue->setContainer($this->createMock(\Illuminate\Container\Container::class));
 
         $job = $queue->pop();

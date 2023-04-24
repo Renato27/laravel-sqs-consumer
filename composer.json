@@ -17,6 +17,11 @@
             "Renatomaldonado\\LaravelSqsConsume\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Renatomaldonado\\LaravelSqsConsume\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "renato maldonado",
