@@ -17,7 +17,7 @@ class LaravelSQSQueueServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'config/sqs-consumer.php' => config_path('sqs-consumer.php')
+            __DIR__.'/../config/sqs-consumer.php' => config_path('sqs-consumer.php')
         ], 'config');
 
         Queue::after(function (JobProcessed $event) {
