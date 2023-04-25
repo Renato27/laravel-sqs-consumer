@@ -20,7 +20,11 @@ class QueueSqs extends SqsQueue
         if(empty($queues)) return $this->executeQueue($queue);
 
         foreach ($queues as $queue) {
-            return $this->executeQueue($queue);
+            $message = $this->executeQueue($queue);
+
+            if(is_null($message)) continue;
+
+            return $message;
         }
     }
 
@@ -77,5 +81,7 @@ class QueueSqs extends SqsQueue
 
             return new SqsJob($this->container, $this->sqs, $response, $this->connectionName, $queue);
         }
+
+        return null;
     }
 }
