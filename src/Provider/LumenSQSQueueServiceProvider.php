@@ -26,8 +26,10 @@ class LumenSQSQueueServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['queue']->extend('sqs-consumer', function () {
-            return new Connector();
+        $this->app->resolving('queue', function ($manager) {
+            $manager->extend('sqs-consumer', function () {
+                return new Connector();
+            });
         });
     }
 }

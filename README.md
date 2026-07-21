@@ -6,8 +6,8 @@ But each job will be responsible for one queue sqs. All will be execute, if mess
 
 ## Dependencies
 
-* PHP >= 7.1.3
-* Laravel (or Lumen) >= 7.0
+* PHP >= 8.1
+* Laravel 10, 11, 12 or 13 (Lumen 10 or 11 — Lumen's final release was 11.x)
 
 ## Installation via Composer
 
@@ -17,7 +17,7 @@ To install simply run:
 composer require renatomaldonado/laravel-sqs-consume
 ```
 
-### Usage in Laravel 7
+### Usage in Laravel
 
 ```php
 // Add in your config/app.php
@@ -28,7 +28,7 @@ composer require renatomaldonado/laravel-sqs-consume
 ];
 ```
 
-### Usage in Lumen 7
+### Usage in Lumen
 
 ```php
 // Add in your bootstrap/app.php

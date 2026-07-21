@@ -56,7 +56,7 @@ class QueueSqs extends SqsQueue
      * @param string $queue
      * @return void
      */
-    private function executeQueue(string $queue)
+    private function executeQueue(?string $queue = null)
     {
         $queue = $this->getQueue($queue);
 
@@ -74,10 +74,6 @@ class QueueSqs extends SqsQueue
                 : $this->container['config']->get('sqs-consumer.default-handler');
 
             $response = $this->modifyPayload($response['Messages'][0], $class);
-
-            if (preg_match('/(5\.[4-8]\..*)|(6\.[0-9]*\..*)|(7\.[0-9]*\..*)|(8\.[0-9]*\..*)|(9\.[0-9]*\..*)/', $this->container->version())) {
-                return new SqsJob($this->container, $this->sqs, $response, $this->connectionName, $queue);
-            }
 
             return new SqsJob($this->container, $this->sqs, $response, $this->connectionName, $queue);
         }
