@@ -3,11 +3,15 @@
 namespace Renatomaldonado\LaravelSqsConsume\Tests;
 
 use Aws\Sqs\SqsClient;
+use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Renatomaldonado\LaravelSqsConsume\Provider\LaravelSQSQueueServiceProvider;
 use Renatomaldonado\LaravelSqsConsume\Provider\LumenSQSQueueServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     protected $sqsClient;
 
     /**
@@ -16,10 +20,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->sqsClient = $this->getMockBuilder(SqsClient::class)
-            ->disableOriginalConstructor()
-            ->addMethods(['receiveMessage'])
-            ->getMock();
+        $this->sqsClient = Mockery::mock(SqsClient::class);
     }
 
     protected function getEnvironmentSetUp($app)
