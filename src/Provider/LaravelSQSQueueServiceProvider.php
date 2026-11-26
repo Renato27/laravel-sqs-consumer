@@ -20,18 +20,23 @@ class LaravelSQSQueueServiceProvider extends ServiceProvider
             __DIR__.'/../config/sqs-consumer.php' => config_path('sqs-consumer.php')
         ], 'config');
 
-        Queue::after([static::class, 'deleteProcessedJob']);
+        Queue::after(fn (JobProcessed $event) => static::deleteProcessedJob($event));
     }
 
     /**
      * Delete a raw SQS message once its handler returned, unless the handler released it back to the
-     * queue (or already deleted it): a released message must come back after its delay.
+     * queue (or already deleted it): a released message must come back after its delay. Only jobs of
+     * connections using the `sqs-consumer` driver are touched.
      *
      * @param \Illuminate\Queue\Events\JobProcessed $event
      * @return void
      */
     public static function deleteProcessedJob(JobProcessed $event)
     {
+        if (config("queue.connections.{$event->connectionName}.driver") !== 'sqs-consumer') {
+            return;
+        }
+
         if (! $event->job->isReleased() && ! $event->job->isDeleted()) {
             $event->job->delete();
         }
