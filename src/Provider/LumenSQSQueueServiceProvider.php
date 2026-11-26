@@ -16,9 +16,7 @@ class LumenSQSQueueServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Queue::after(function (JobProcessed $event) {
-            $event->job->delete();
-        });
+        Queue::after(fn (JobProcessed $event) => LaravelSQSQueueServiceProvider::deleteProcessedJob($event));
     }
 
     /**

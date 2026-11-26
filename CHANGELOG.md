@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
+- The after-job listener no longer makes Laravel build the service provider through the container: every processed job (sync, redis, ...) threw `BindingResolutionException` for `$app`. It is now a closure.
+- The listener only deletes jobs of connections using the `sqs-consumer` driver; jobs of other connections are left alone. The Lumen provider now shares this listener (it also honours released/deleted jobs).
 - A message the handler released (`$job->release($delay)`) is no longer deleted by the after-job listener; it comes back after its delay. Already-deleted jobs are not deleted twice.
 
 ### Added
