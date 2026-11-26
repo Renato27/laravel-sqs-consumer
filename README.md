@@ -84,6 +84,28 @@ In your .env file, choose sqs-consumer as your new default queue connection:
 ```
 QUEUE_CONNECTION=sqs-consumer
 ```
+### Per-connection options
+
+Optional keys on a `sqs-consumer` connection in `config/queue.php`:
+
+```php
+'orders' => [
+    'driver' => 'sqs-consumer',
+    // key, secret, prefix, queue, region ...
+    'wait_time' => 20,             // long poll seconds (WaitTimeSeconds, 0-20)
+    'visibility_timeout' => 900,   // seconds a received message stays hidden (0-43200)
+    'queues' => ['orders.fifo'],   // overrides sqs-consumer.queues for this connection
+],
+```
+
+Keep `visibility_timeout` above the worker's `--timeout`, or a slow message becomes visible again and is
+processed twice. With several queues on one connection, each empty queue can hold the worker for up to
+`wait_time` seconds before the next one is polled.
+
+Run one `queue:work <connection>` per connection to consume queues in parallel. To let SQS move a
+message to its dead-letter queue after `maxReceiveCount`, run the worker with `--tries=0`, so Laravel
+never deletes a failing message itself.
+
 ### Receiving from SQS
 
 If a third-party application is creating custom-format JSON messages or any message, just add a handler in the config file and
