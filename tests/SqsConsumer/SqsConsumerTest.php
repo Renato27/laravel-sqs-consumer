@@ -142,4 +142,57 @@ class SqsConsumerTest extends TestCase
 
         $this->assertSame('job-default@handle', $rawBody['job']);
     }
+
+    public function testLongPollsAndHidesTheMessageWhenConfigured()
+    {
+        $this->sqsClient->shouldReceive('receiveMessage')
+            ->with([
+                'QueueUrl' => '/default_queue',
+                'AttributeNames' => ['ApproximateReceiveCount'],
+                'WaitTimeSeconds' => 20,
+                'VisibilityTimeout' => 900,
+            ])
+            ->once()
+            ->andReturn(['Messages' => []]);
+
+        $queue = new QueueSqs($this->sqsClient, 'default_queue');
+        $queue->setConsumerOptions(['wait_time' => 20, 'visibility_timeout' => 900]);
+        $queue->setContainer($this->container([
+            'sqs-consumer' => ['queues' => [], 'handlers' => [], 'default-handler' => 'job-default'],
+        ]));
+
+        $this->assertNull($queue->pop());
+    }
+
+    public function testConnectionQueuesOverrideTheGlobalList()
+    {
+        $this->sqsClient->shouldReceive('receiveMessage')
+            ->with(['QueueUrl' => '/own-queue', 'AttributeNames' => ['ApproximateReceiveCount']])
+            ->once()
+            ->andReturn(['Messages' => [$this->message()]]);
+
+        $queue = new QueueSqs($this->sqsClient, 'default_queue');
+        $queue->setConsumerOptions(['queues' => ['own-queue']]);
+        $queue->setContainer($this->container([
+            'sqs-consumer' => [
+                'queues' => ['global-queue'],
+                'handlers' => ['own-queue' => 'own-job'],
+                'default-handler' => 'job-default',
+            ],
+        ]));
+
+        $rawBody = json_decode($queue->pop()->getRawBody(), true);
+
+        $this->assertSame('own-job@handle', $rawBody['job']);
+    }
+
+    public function testConnectorPassesTheConsumerOptions()
+    {
+        $queue = (new \Renatomaldonado\LaravelSqsConsume\Executer\Connector())->connect([
+            'key' => 'k', 'secret' => 's', 'region' => 'eu-west-1', 'queue' => 'q',
+            'wait_time' => 20, 'visibility_timeout' => 900, 'queues' => ['a', 'b'],
+        ]);
+
+        $this->assertSame(['wait_time' => 20, 'visibility_timeout' => 900, 'queues' => ['a', 'b']], $queue->getConsumerOptions());
+    }
 }

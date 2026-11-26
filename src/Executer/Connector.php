@@ -28,6 +28,8 @@ class Connector extends SqsConnector
             Arr::get($config, 'prefix', '')
         );
 
+        $queue->setConsumerOptions(Arr::only($config, ['wait_time', 'visibility_timeout', 'queues']));
+
         return $queue;
     }
 }
