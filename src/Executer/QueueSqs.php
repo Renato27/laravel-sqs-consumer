@@ -7,6 +7,33 @@ use Illuminate\Queue\SqsQueue;
 
 class QueueSqs extends SqsQueue
 {
+    /**
+     * Per-connection consumer options: wait_time (long poll seconds), visibility_timeout (seconds a received
+     * message stays hidden) and queues (overrides the global sqs-consumer.queues list).
+     *
+     * @var array
+     */
+    protected $consumerOptions = [];
+
+    /**
+     * @param array $options
+     * @return $this
+     */
+    public function setConsumerOptions(array $options)
+    {
+        $this->consumerOptions = $options;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConsumerOptions()
+    {
+        return $this->consumerOptions;
+    }
+
      /**
      * Pop the next job off of the queue.
      *
@@ -15,7 +42,7 @@ class QueueSqs extends SqsQueue
      */
     public function pop($queue = null)
     {
-        $queues = $this->container['config']->get('sqs-consumer.queues');
+        $queues = $this->consumerOptions['queues'] ?? $this->container['config']->get('sqs-consumer.queues');
 
         if(empty($queues)) return $this->executeQueue($queue);
 
@@ -60,10 +87,12 @@ class QueueSqs extends SqsQueue
     {
         $queue = $this->getQueue($queue);
 
-        $response = $this->sqs->receiveMessage([
+        $response = $this->sqs->receiveMessage(array_filter([
             'QueueUrl' => $queue,
             'AttributeNames' => ['ApproximateReceiveCount'],
-        ]);
+            'WaitTimeSeconds' => $this->consumerOptions['wait_time'] ?? null,
+            'VisibilityTimeout' => $this->consumerOptions['visibility_timeout'] ?? null,
+        ], fn ($value) => $value !== null));
 
         if (isset($response['Messages']) && count($response['Messages']) > 0) {
             $queueId = explode('/', $queue);

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- A message the handler released (`$job->release($delay)`) is no longer deleted by the after-job listener; it comes back after its delay. Already-deleted jobs are not deleted twice.
+
+### Added
+
+- Per-connection consumer options, all optional and backwards compatible:
+  - `wait_time`: long polling (`WaitTimeSeconds`) instead of short polling.
+  - `visibility_timeout`: how long a received message stays hidden (`VisibilityTimeout`), for handlers slower
+    than the queue default.
+  - `queues`: overrides the global `sqs-consumer.queues` list, so each queue can get its own connection and
+    `queue:work` process.
+
 ## [2.0.0] - 2026-07-21
 
 ### Changed
