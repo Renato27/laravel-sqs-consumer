@@ -52,6 +52,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          # Laravel 10/11 are EOL and every release carries a security advisory; Composer >= 2.9 refuses
+          # to install them. CI only tests compatibility, so allow them here (not in composer.json).
+          composer config policy.advisories.block false
           composer require "illuminate/support:${{ matrix.laravel }}" "illuminate/queue:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-update
           composer update --prefer-dist --no-interaction --no-progress
 
